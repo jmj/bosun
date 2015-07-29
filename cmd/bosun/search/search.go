@@ -121,7 +121,7 @@ func (s *Search) Index(mdp opentsdb.MultiDataPoint) {
 	case s.dps <- mdp:
 		return
 	default:
-		collect.Add("search.dropped", opentsdb.TagSet{}, len(mdp))
+		collect.Add("search.dropped", opentsdb.TagSet{}, int64(len(mdp)))
 		return
 	}
 }
