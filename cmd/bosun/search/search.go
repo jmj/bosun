@@ -115,6 +115,7 @@ func (s *Search) Copy() {
 func init() {
 	metadata.AddMetricMeta("bosun.search.dropped", metadata.Counter, metadata.Count, "Number of datapoints dropped by search due to full indexing queue.")
 	metadata.AddMetricMeta("bosun.search.indexed", metadata.Counter, metadata.Count, "Number of datapoints indexed by search.")
+	collect.Add("search.dropped", opentsdb.TagSet{}, 0)
 }
 
 func (s *Search) Index(mdp opentsdb.MultiDataPoint) {
