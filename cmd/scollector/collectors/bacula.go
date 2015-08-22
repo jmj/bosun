@@ -50,14 +50,11 @@ func c_bacula_status(user, pass, dbase string) (opentsdb.MultiDataPoint, error) 
 	var tagSet opentsdb.TagSet
 	var rate metadata.RateType
 	var unit metadata.Unit
-	var description string
 
-	name = "linux.bacula"
-	value = 10
 	tagSet = nil
-	rate = metadata.Unknown
-	unit = metadata.None
-	description = "this is a desc"
+	rate = metadata.Gauge
+	unit = metadata.Item
+	description := "Successful backup jobs in the last week"
 
 	rows, err := db.Query("SELECT DISTINCT(Name) from Job")
 	if err != nil {
@@ -69,13 +66,13 @@ func c_bacula_status(user, pass, dbase string) (opentsdb.MultiDataPoint, error) 
 		rows.Scan(&name)
 
 		r := db.QueryRow("SELECT count(JobId) as value from Job where RealEndTime>SUBTIME(now(), '7 0:0:0') and JobStatus='T' and Name=?", name)
-		
+
 		r.Scan(&value)
 
 		slog.Infoln(name, value)
 
-		Add(&md, "bacula."+name, value, tagSet, rate, unit, description)
+		Add(&md, "bacula."+name+".last_week", value, tagSet, rate, unit, description)
 	}
-	
+
 	return md, nil
 }
