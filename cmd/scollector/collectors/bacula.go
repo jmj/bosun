@@ -2,6 +2,7 @@ package collectors
 
 import (
 	"time"
+	"fmt"
 
 	 _ "github.com/go-sql-driver/mysql"
 	"database/sql"
@@ -16,16 +17,26 @@ func Bacula(user, pass, dbase string) error {
 		F: func() (opentsdb.MultiDataPoint, error) {
 			return c_bacula_status(user, pass, dbase)
 		},
-		Interval: 2 * time.Hour,
-		name:     "bacula",
+		Enable:		func() bool {
+			return baculaEnable(user, pass, dbase)
+		},
+		Interval:	2 * time.Hour,
+		name:		"bacula",
 	})
 
 	return nil
 }
 
+func baculaEnable(user, pass, dbase string) bool {
+	dsn := fmt.Sprintf("%s:%s@/%s", user, pass, dbase)
+	db, err := sql.Open("mysql", dsn)
+	defer db.Close()
+	return err == nil
+}
+
 func c_bacula_status(user, pass, dbase string) (opentsdb.MultiDataPoint, error) {
-	slog.Error("WTF")
-	db, err := sql.Open("mysql", "user:pass@/db")
+	dsn := fmt.Sprintf("%s:%s@/%s", user, pass, dbase)
+	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		slog.Error("Failed to connect to database")
 		return nil, err
