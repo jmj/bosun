@@ -1,6 +1,8 @@
 package collectors
 
 import (
+	"time"
+
 	 _ "github.com/go-sql-driver/mysql"
 	"database/sql"
 
@@ -8,13 +10,20 @@ import (
 	"bosun.org/opentsdb"
 	"bosun.org/slog"
 )
-	
 
-func init() {
-	collectors = append(collectors, &IntervalCollector{F: c_bacula_status})
+func Bacula(user, pass, dbase string) error {
+	collectors = append(collectors, &IntervalCollector{
+		F: func() (opentsdb.MultiDataPoint, error) {
+			return c_bacula_status(user, pass, dbase)
+		},
+		Interval: 2 * time.Hour,
+		name:     "bacula",
+	})
+
+	return nil
 }
 
-func c_bacula_status() (opentsdb.MultiDataPoint, error) {
+func c_bacula_status(user, pass, dbase string) (opentsdb.MultiDataPoint, error) {
 	slog.Error("WTF")
 	db, err := sql.Open("mysql", "user:pass@/db")
 	if err != nil {

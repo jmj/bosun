@@ -48,6 +48,7 @@ type Conf struct {
 	// namespace
 	ElasticIndexFilters []string
 	RabbitMQ            []RabbitMQ
+	Bacula				[]Bacula
 }
 
 type HAProxy struct {
@@ -125,4 +126,10 @@ type Riak struct {
 
 type RabbitMQ struct {
 	URL string
+}
+
+type Bacula struct {
+	User		string
+	Password	string
+	Database	string
 }
