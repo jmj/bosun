@@ -1,11 +1,11 @@
 package collectors
 
 import (
-	"time"
 	"fmt"
+	"time"
 
-	 _ "github.com/go-sql-driver/mysql"
 	"database/sql"
+	_ "github.com/go-sql-driver/mysql"
 
 	"bosun.org/metadata"
 	"bosun.org/opentsdb"
@@ -17,11 +17,11 @@ func Bacula(user, pass, dbase string) error {
 		F: func() (opentsdb.MultiDataPoint, error) {
 			return c_bacula_status(user, pass, dbase)
 		},
-		Enable:		func() bool {
+		Enable: func() bool {
 			return baculaEnable(user, pass, dbase)
 		},
-		Interval:	2 * time.Hour,
-		name:		"bacula",
+		Interval: 2 * time.Hour,
+		name:     "bacula",
 	})
 
 	return nil
